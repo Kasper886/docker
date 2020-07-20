@@ -1,0 +1,36 @@
+# Use root/example as user/password credentials
+version: '3'
+
+services:
+
+  web:
+    build: ./web    
+    environment:
+        - APPACHE_RUN_USER=www-data
+    volumes:
+        - ${APP_PATH_HOST}:${APP_PATH_CONTAINER}
+    ports:
+        - 8080:80
+    working_dir: ${APP_PATH_CONTAINER}
+
+
+  db:
+    image: mariadb
+    restart: always
+    environment:
+        MYSQL_ROOT_PASSWORD: 00872186
+    volumes:
+        - ${DB_PATH_HOST}:/var/lib/mysql
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+       - 6080:8080
+   
+  composer:
+    image: composer:1.6
+    volumes:
+       - ${APP_PATH_HOST}:${APP_PATH_CONTAINER}
+    working_dir: ${APP_PATH_CONTAINER}
+    command: composer install
